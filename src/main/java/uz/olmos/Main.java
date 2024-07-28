@@ -1,5 +1,7 @@
 package uz.olmos;
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntFunction;
@@ -20,7 +22,14 @@ public class Main {
         System.out.println(similarPairs(new String[]{"aba", "aabb", "abcd", "bac", "aabc"}));
         System.out.println(countConsistentStrings("abc", new String[]{"a", "b", "c", "ab", "ac", "bc", "abc"}));
         System.out.println(interpret("G()()()()(al)"));
-        System.out.println(oddString(new String[]{"aaa","bob","ccc","ddd"}));
+        System.out.println(oddString(new String[]{"aaa", "bob", "ccc", "ddd"}));
+        System.out.println(isAlienSorted(new String[]{"hello", "leetcode"}, "hlabcdefgijkmnopqrstuvwxyz"));
+        System.out.println(removeElement(new int[]{0, 1, 2, 2, 3, 0, 4, 2}, 2));
+        System.out.println(Arrays.toString(createTargetArray(new int[]{0, 1, 2, 3, 4}, new int[]{0, 1, 2, 2, 1})));
+        System.out.println(truncateSentence("Hello how are you Contestant", 4));
+        System.out.println(Arrays.toString(separateDigits(new int[]{13, 25, 83, 77})));
+        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
+        System.out.println(findDifference(new int[]{1, 2, 3, 3}, new int[]{1, 1, 2, 2}));
     }
 
     //    500. Keyboard Row
@@ -327,7 +336,7 @@ public class Main {
         return res.toString();
     }
 
-//  2451. Odd String Difference
+    //  2451. Odd String Difference
     public static String oddString(String[] words) {
         HashMap<List<Integer>, Integer> hash = new HashMap<>();
         for (String word : words) {
@@ -344,7 +353,7 @@ public class Main {
         return "";
     }
 
-//  2451. Odd String Difference. Helper
+    //  2451. Odd String Difference. Helper
     public static Integer[] getDifference(String str) {
         var n = str.length();
         Integer[] arr = new Integer[n - 1];
@@ -352,6 +361,173 @@ public class Main {
             arr[i] = (int) str.charAt(i + 1) - (int) str.charAt(i);
         }
         return arr;
+    }
+
+    //    953. Verifying an Alien Dictionary
+    public static boolean isAlienSorted(String[] words, String order) {
+        HashMap<Character, Integer> hashOrder = new HashMap<>();
+        for (int i = 0; i < 26; i++) {
+            hashOrder.put(order.charAt(i), i);
+        }
+        int n = words.length;
+        for (int i = 0; i < n - 1; i++) {
+            if (!isSorted(words[i], words[i + 1], hashOrder)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //  953. Verifying an Alien Dictionary. Help
+    public static boolean isSorted(String word, String word1, HashMap<Character, Integer> hashOrder) {
+        int n = Math.min(word.length(), word1.length());
+        for (int i = 0; i < n; i++) {
+            int order1 = hashOrder.get(word.charAt(i));
+            int order2 = hashOrder.get(word1.charAt(i));
+            if (order1 != order2) {
+                return order2 >= order1;
+            }
+        }
+        return word1.length() >= word.length();
+    }
+
+    //  2185. Counting Words With a Given Prefix
+    public static int prefixCount(String[] words, String pref) {
+        int ctr = 0;
+        for (String word : words) {
+            if (word.startsWith(pref)) ctr++;
+        }
+        return ctr;
+    }
+
+    //  27. Remove Element
+    public static int removeElement(int[] nums, int val) {
+        int index = 0;
+        int ctr = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[index++] = nums[i];
+                ctr++;
+            } else {
+                nums[i] = 0;
+            }
+        }
+        return ctr;
+    }
+
+    //    1389. Create Target Array in the Given Order
+    public static int[] createTargetArray(int[] nums, int[] index) {
+        int[] target = new int[nums.length];
+        ArrayList<Integer> integers = new ArrayList<>();
+        for (int i = 0; i < target.length; i++) {
+            integers.add(index[i], nums[i]);
+        }
+        for (int i = 0; i < target.length; i++) {
+            target[i] = integers.get(i);
+        }
+        return target;
+    }
+
+    //    1816. Truncate Sentence
+    public static String truncateSentence(String s, int k) {
+        int n = s.length();
+        StringBuilder res = new StringBuilder();
+        int ctr = 0;
+        for (int i = 0; i < n; i++) {
+            if (ctr == k) break;
+            if (s.charAt(i) == ' ') {
+                res.append(' ');
+                ctr++;
+            } else {
+                res.append(s.charAt(i));
+            }
+        }
+        return res.toString().trim();
+    }
+
+    public static int[] separateDigits(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        for (int num : nums) {
+            list.addAll(getArr(num));
+        }
+        int[] res = new int[list.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = list.get(i);
+        }
+        return res;
+    }
+
+    public static List<Integer> getArr(int n) {
+        List<Integer> nums = new ArrayList<>();
+        while (n > 0) {
+            nums.add(n % 10);
+            n /= 10;
+        }
+        return nums.reversed();
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        int left;
+        int right;
+        int sum;
+        List<List<Integer>> result = new ArrayList<>();
+        nums = Arrays.stream(nums).sorted().toArray();
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            left = i + 1;
+            right = nums.length - 1;
+            while (left < right) {
+                sum = nums[i] + nums[left] + nums[right];
+                if (sum == 0) {
+                    result.add(new ArrayList<>(List.of(nums[i], nums[left], nums[right])));
+                    while (left < right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+                    while (left < right && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+                    left++;
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+
+    //    2215. Find the Difference of Two Arrays
+    public static List<List<Integer>> findDifference(int[] nums1, int[] nums2) {
+        List<List<Integer>> result = new ArrayList<>();
+        HashMap<Integer, Integer> nums1Hash = getMap(nums1);
+        HashMap<Integer, Integer> nums2Hash = getMap(nums2);
+        Set<Integer> tempInts = new HashSet<>();
+        for (int i : nums1) {
+            if (!nums2Hash.containsKey(i)) {
+                tempInts.add(i);
+            }
+        }
+        result.add(tempInts.stream().toList());
+        tempInts = new HashSet<>();
+        for (int i : nums2) {
+            if (!nums1Hash.containsKey(i)) {
+                tempInts.add(i);
+            }
+        }
+        result.add(tempInts.stream().toList());
+        return result;
+    }
+
+    //    2215. Find the Difference of Two Arrays
+    public static HashMap<Integer, Integer> getMap(int[] arr) {
+        HashMap<Integer, Integer> nums1Hash = new HashMap<>();
+        for (int j : arr) {
+            nums1Hash.put(j, nums1Hash.getOrDefault(nums1Hash.get(j), 0) + 1);
+        }
+        return nums1Hash;
     }
 
 
