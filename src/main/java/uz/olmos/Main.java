@@ -30,6 +30,10 @@ public class Main {
         System.out.println(Arrays.toString(separateDigits(new int[]{13, 25, 83, 77})));
         System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
         System.out.println(findDifference(new int[]{1, 2, 3, 3}, new int[]{1, 1, 2, 2}));
+        System.out.println("\nResult: " + sumOddLengthSubarrays(new int[]{1, 4, 2, 5, 3}));
+        System.out.println(sumOfSquares(new int[]{2, 7, 1, 19, 18, 3}));
+        System.out.println(buyChoco(new int[]{98, 54, 6, 34, 66, 63, 52, 39}, 62));
+        System.out.println(Arrays.toString(sortedSquares(new int[]{-7, -3, 2, 3, 11})));
     }
 
     //    500. Keyboard Row
@@ -528,6 +532,66 @@ public class Main {
             nums1Hash.put(j, nums1Hash.getOrDefault(nums1Hash.get(j), 0) + 1);
         }
         return nums1Hash;
+    }
+
+    //    1588. Sum of All Odd Length Subarrays
+    public static int sumOddLengthSubarrays(int[] arr) {
+        int n = arr.length;
+        int sum = Arrays.stream(arr).sum();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if ((j - i + 1) % 2 != 0) {
+                    for (int k = i; k <= j; k++) {
+                        sum += arr[k];
+                    }
+                }
+            }
+        }
+        return sum;
+    }
+
+    public static int sumOfSquares(int[] nums) {
+        HashMap<Integer, Integer> numHash = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            numHash.put(i + 1, nums[i]);
+        }
+        int sum = 0;
+        for (Map.Entry<Integer, Integer> entry : numHash.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            if (n % entry.getKey() == 0) {
+                sum += entry.getValue() * entry.getValue();
+            }
+        }
+        return sum;
+    }
+
+    public static int buyChoco(int[] prices, int money) {
+        int n = prices.length;
+        int minPrice = money;
+        boolean isFound = false;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int tempPrice = prices[i] + prices[j];
+                if (tempPrice <= money) {
+                    minPrice = Math.min(tempPrice, minPrice);
+                    isFound = true;
+                }
+            }
+        }
+        return isFound ? money - minPrice : money;
+    }
+
+    public static int[] sortedSquares(int[] nums) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (int num : nums) {
+            pq.add(num * num);
+        }
+        int index = 0;
+        while (!pq.isEmpty()) {
+            nums[index++] = pq.poll();
+        }
+        return nums;
     }
 
 
