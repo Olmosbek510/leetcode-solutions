@@ -1,12 +1,8 @@
 package uz.olmos;
-
-import com.sun.source.tree.Tree;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntFunction;
 
-public class Main {
+public class FirstMain {
     public static void main(String[] args) {
         System.out.println(Arrays.toString(findWords(new String[]{"Hello", "Alaska", "Dad", "Peace"})));
         System.out.println(Arrays.toString(findWords(new String[]{"adsdf", "sfd"})));
