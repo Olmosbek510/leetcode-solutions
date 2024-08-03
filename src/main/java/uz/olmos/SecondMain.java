@@ -1,6 +1,7 @@
 package uz.olmos;
 
 
+import javax.swing.plaf.ActionMapUIResource;
 import java.util.*;
 
 public class SecondMain {
@@ -23,6 +24,14 @@ public class SecondMain {
         System.out.println(isHappy(25));
         System.out.println(isIsomorphic("badc", "baba"));
         System.out.println(Arrays.toString(decompressRLElist(new int[]{1, 2, 3, 4})));
+        groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
+        System.out.println(majorityElement(new int[]{2, 2, 1, 1, 1, 2, 2}));
+        moveZeroes(new int[]{0, 1, 0, 3, 12});
+        System.out.println(minOperations(new String[]{"./", "../", "./"}));
+        System.out.println(isPrefixString("iloveleetcode", new String[]{"apples", "i", "love", "leetcode"}));
+        System.out.println(Arrays.toString(numberOfLines(new int[]{3, 4, 10, 4, 8, 7, 3, 3, 4, 9, 8, 2, 9, 6, 2, 8, 4, 9, 9, 10, 2, 4, 9, 10, 8, 2}, "mqblbtpvicqhbrejb")));
+        System.out.println(toGoatLatin("I speak Goat Latin"));
+        System.out.println(countPrefixes(new String[]{}, ""));
     }
 
     //    1436. Destination City
@@ -383,20 +392,14 @@ public class SecondMain {
     }
 
     public static List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String, List<String>> groups = new HashMap<>();
-        int n = strs.length;
-        for (int i = 0; i < n; i++) {
-            if (groups.containsKey(strs[i]))
-               continue;
-            groups.put(strs[i], new ArrayList<>());
-            for (int j = i + 1; j < n; j++) {
-                if (isAnagram(strs[i], strs[j])) {
-                    groups.get(strs[i]).add(strs[j]);
-                }
-            }
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String sorted = new String(chars);
+            map.computeIfAbsent(sorted, k -> new ArrayList<>()).add(str);
         }
-        groups.forEach((k, v) -> System.out.println(k + ": " + v));
-        return new ArrayList<>();
+        return new ArrayList<>(map.values());
     }
 
     public static boolean isAnagram(String s, String t) {
@@ -414,6 +417,114 @@ public class SecondMain {
             }
         }
         return sHash.isEmpty();
+    }
+
+    public static String sortChars(char[] chars) {
+        Arrays.sort(chars);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char aChar : chars) {
+            stringBuilder.append(aChar);
+        }
+        System.out.println(Arrays.toString(chars));
+        return stringBuilder.toString();
+    }
+
+    public static int majorityElement(int[] nums) {
+        int n = nums.length;
+        double app = (double) n / 2;
+        HashMap<Integer, Integer> occ = new HashMap<>();
+        for (int num : nums) {
+            occ.put(num, occ.getOrDefault(num, 0) + 1);
+        }
+        for (Map.Entry<Integer, Integer> entry : occ.entrySet()) {
+            if (entry.getValue() >= app) {
+                return entry.getKey();
+            }
+        }
+        return 0;
+    }
+
+    public static void moveZeroes(int[] nums) {
+        int indx = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                int temp = nums[indx];
+                nums[indx] = nums[i];
+                nums[i] = temp;
+                indx++;
+            }
+        }
+    }
+
+    public static int minOperations(String[] logs) {
+        int ctr = 0;
+        for (String log : logs) {
+            if (log.equals("../")) {
+                if (ctr > 0)
+                    ctr--;
+                continue;
+            } else if (log.equals("./")) {
+                continue;
+            }
+            System.out.println(log);
+            System.out.println("Counter increased");
+            ctr++;
+        }
+        return ctr;
+    }
+
+    public static boolean isPrefixString(String s, String[] words) {
+        StringBuilder prefix = new StringBuilder();
+        for (String word : words) {
+            prefix.append(word);
+            if (s.contentEquals(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static int[] numberOfLines(int[] widths, String s) {
+        HashMap<Character, Integer> width = new HashMap<>();
+        for (int i = 0; i < widths.length; i++) {
+            width.put((char) (97 + i), widths[i]);
+        }
+        int tempSum = 0;
+        int lines = 1;
+        for (int i = 0; i < s.length(); i++) {
+            tempSum += width.get(s.charAt(i));
+            if (tempSum > 100) {
+                tempSum = width.get(s.charAt(i));
+                lines++;
+            }
+        }
+        return new int[]{lines, tempSum};
+    }
+
+    public static String toGoatLatin(String sentence) {
+        HashSet<String> vowels = new HashSet<>(List.of("a", "u", "o", "i", "e"));
+        String[] arr = sentence.split(" ");
+        StringJoiner res = new StringJoiner(" ");
+        for (int i = 0; i < arr.length; i++) {
+            StringBuilder temp = new StringBuilder(arr[i]);
+            if (vowels.contains(String.valueOf(arr[i].charAt(0)).toLowerCase())) {
+                temp.append("ma");
+            } else {
+                temp = new StringBuilder(temp.substring(1)).append(temp.charAt(0)).append("ma");
+            }
+            temp.append("a".repeat(i + 1));
+            res.add(temp);
+        }
+        return res.toString();
+    }
+
+    public static int countPrefixes(String[] words, String s) {
+        int ctr = 0;
+        for (String word : words) {
+            if(s.startsWith(word)) ctr++;
+        }
+        return ctr;
     }
 
 }
