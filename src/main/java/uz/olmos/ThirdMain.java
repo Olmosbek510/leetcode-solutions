@@ -11,6 +11,12 @@ public class ThirdMain {
         System.out.println(reverseVowels("race car"));
         System.out.println(countWords(new String[]{"leetcode", "is", "amazing", "as", "is"}, new String[]{"amazing", "leetcode", "is"}));
         System.out.println(kthDistinct(new String[]{"d", "b", "c", "b", "c", "a"}, 2));
+        System.out.println(minimumAverage(new int[]{7, 8, 3, 4, 15, 13, 4, 1}));
+        System.out.println(distributeCandies(new int[]{6, 6, 6, 6}));
+        System.out.println(containsNearbyDuplicate(new int[]{1, 2, 3, 1}, 3));
+        System.out.println(slowestKey(new int[]{19, 22, 28, 29, 66, 81, 93, 97}, "fnfaaxha"));
+        System.out.println(restoreString("codeleet", new int[]{4, 5, 6, 7, 0, 2, 1, 3}));
+        System.out.println(isArraySpecial(new int[]{2, 1, 4}));
     }
 
     public static boolean checkDistances(String s, int[] distance) {
@@ -149,5 +155,124 @@ public class ThirdMain {
             return singles.get(k - 1);
         }
         return "";
+    }
+
+    public int countOperations(int num1, int num2) {
+        int ctr = 0;
+        while (num1 != 0 && num2 != 0) {
+            if (num1 > num2) num1 -= num2;
+            else num2 -= num1;
+            ctr++;
+        }
+        return ctr;
+    }
+
+    public static double minimumAverage(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        double[] averages = new double[n / 2];
+        double min = Double.MAX_VALUE;
+        for (int i = 0; i < n / 2; i++) {
+            averages[i] = (double) (nums[i] + nums[n - i - 1]) / 2;
+            min = Math.min(min, (double) (nums[i] + nums[n - i - 1]) / 2);
+        }
+        System.out.println(Arrays.toString(averages));
+        return min;
+    }
+
+    public static int distributeCandies(int[] candyType) {
+        int limit = candyType.length / 2;
+        HashSet<Integer> types = new HashSet<>();
+        for (int i : candyType) {
+            types.add(i);
+        }
+        return Math.min(types.size(), limit);
+    }
+
+    public static boolean containsNearbyDuplicate(int[] nums, int k) {
+        HashMap<Integer, Integer> ind = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            ind.put(nums[i], Math.abs(ind.getOrDefault(nums[i], 0) - i));
+        }
+        for (Map.Entry<Integer, Integer> entry : ind.entrySet()) {
+            if (entry.getValue() <= k) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static char slowestKey(int[] releaseTimes, String keysPressed) {
+        int n = keysPressed.length();
+        int max = releaseTimes[0];
+        char c = keysPressed.charAt(0);
+        for (int i = 1; i < n; i++) {
+            int interval = releaseTimes[i] - releaseTimes[i - 1];
+            if (max < interval) {
+                max = interval;
+                c = keysPressed.charAt(i);
+            } else if (max == interval && c < keysPressed.charAt(i)) {
+                c = keysPressed.charAt(i);
+            }
+        }
+        return c;
+    }
+
+    public static String restoreString(String s, int[] indices) {
+        char[] result = new char[indices.length];
+        for (int i = 0; i < indices.length; i++) {
+            result[indices[i]] = s.charAt(i);
+        }
+        return new String(result);
+    }
+
+    public int smallestEqual(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (i % 10 == nums[i]) return i;
+        }
+        return -1;
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String string : wordDict) {
+            stringBuilder.append(string);
+        }
+        return stringBuilder.toString().contains(s);
+    }
+
+    public static boolean isArraySpecial(int[] nums) {
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (i != 0 && !didParity(nums[i], nums[i + 1])) return false;
+        }
+        return true;
+    }
+
+    public static boolean didParity(int n, int n1) {
+        return n % 2 == 0 ? n1 % 2 == 1 : n1 % 2 == 0;
+    }
+
+    public static boolean canAliceWin(int[] nums) {
+        int doubleSum = 0;
+        int singleSum = 0;
+        for (int num : nums) {
+            if (String.valueOf(num).length() == 1) {
+                singleSum += num;
+                continue;
+            }
+            doubleSum += num;
+        }
+        return singleSum != doubleSum;
+    }
+
+    public static boolean isSingle(int n) {
+        int sum = 0;
+        while (n > 0) {
+            sum++;
+            n /= 10;
+        }
+        return sum == 1;
     }
 }
