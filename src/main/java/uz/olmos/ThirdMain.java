@@ -17,6 +17,17 @@ public class ThirdMain {
         System.out.println(slowestKey(new int[]{19, 22, 28, 29, 66, 81, 93, 97}, "fnfaaxha"));
         System.out.println(restoreString("codeleet", new int[]{4, 5, 6, 7, 0, 2, 1, 3}));
         System.out.println(isArraySpecial(new int[]{2, 1, 4}));
+        System.out.println(Arrays.toString(convertTemperature(36.50)));
+        System.out.println(sumOfEncryptedInt(new int[]{10, 21, 31}));
+        System.out.println(divisorSubstrings(300, 2));
+        System.out.println(largestGoodInteger("1221000"));
+        System.out.println(isGood(new int[]{1, 3, 3, 2}));
+        System.out.println(Arrays.toString(nextGreaterElement(new int[]{1, 3, 5, 2, 4}, new int[]{6, 5, 4, 3, 2, 1, 7})));
+        System.out.println(Arrays.toString(getNoZeroIntegers(2)));
+        System.out.println(hammingWeight(11));
+        System.out.println(numberOfAlternatingGroups(new int[]{0, 1, 0, 0, 1}));
+        System.out.println("Result = " + minDeletionSize(new String[]{"zyx", "wvu", "tsr"}));
+        System.out.println(thirdMax(new int[]{3, 2, 1}));
     }
 
     public static boolean checkDistances(String s, int[] distance) {
@@ -275,4 +286,242 @@ public class ThirdMain {
         }
         return sum == 1;
     }
+
+    public static double[] convertTemperature(double celsius) {
+        return new double[]{celsius + 273.15, celsius * 1.80 + 32.00};
+    }
+
+    public static int sumOfEncryptedInt(int[] nums) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += encrypt(num);
+        }
+        return sum;
+    }
+
+    public static int encrypt(int x) {
+        if (x < 10) return x;
+        int max = Integer.MIN_VALUE;
+        int temp = x;
+        int result = 0;
+        while (x > 0) {
+            max = Math.max(max, x % 10);
+            x /= 10;
+        }
+        while (temp > 0) {
+            result *= 10;
+            int exp = temp % 10;
+            result += Math.max(exp, max);
+            temp /= 10;
+        }
+        return result;
+    }
+
+    public static int divisorSubstrings(int num, int k) {
+        if (num < 10) {
+            return k == 1 ? 1 : 0;
+        }
+        String numStr = String.valueOf(num);
+        String substring = numStr.substring(numStr.length() - k);
+        int parsed = Integer.parseInt(substring);
+        int beauty = 0;
+        if (parsed != 0)
+            beauty = num % parsed == 0 ? 1 : 0;
+        for (int i = 0; i < numStr.length(); i++) {
+            if (i != numStr.length() - 1 && numStr.length() > i + k) {
+                int temp = Integer.parseInt(numStr.substring(i, i + k));
+                if (temp == 0) continue;
+                if (num % temp == 0) beauty++;
+            }
+        }
+        return beauty;
+    }
+
+    public static String largestGoodInteger(String num) {
+        int max = Integer.MIN_VALUE;
+        String maxStr = "";
+        String numStr = String.valueOf(num);
+        if (numStr.length() < 3) {
+            return "";
+        }
+        String last3 = numStr.substring(numStr.length() - 3);
+        if (isTheSame(last3)) {
+            maxStr = last3;
+            max = Integer.parseInt(last3);
+        }
+        for (int i = 0; i < numStr.length(); i++) {
+            if (numStr.length() > i + 3) {
+                String subNum = numStr.substring(i, i + 3);
+                if (isTheSame(subNum) && Integer.parseInt(subNum) > max) {
+                    max = Integer.parseInt(subNum);
+                    maxStr = subNum;
+                }
+            }
+        }
+        return maxStr;
+    }
+
+    public static boolean isTheSame(String str) {
+        char first = str.charAt(0);
+        for (char c : str.toCharArray()) {
+            if (first != c) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int addedInteger(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int asInt = Arrays.stream(nums1).min().getAsInt();
+        int asInt1 = Arrays.stream(nums2).min().getAsInt();
+        return asInt1 - asInt;
+    }
+
+    public static boolean isGood(int[] nums) {
+        int max = Arrays.stream(nums).max().getAsInt();
+        if (nums.length != max + 1) return false;
+        int[] temp = new int[max + 1];
+        for (int i = 0; i < max; i++) {
+            temp[i] = i + 1;
+        }
+        temp[max] = max;
+        Arrays.sort(nums);
+        Arrays.sort(temp);
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != temp[i]) return false;
+        }
+        return true;
+    }
+
+    public boolean isPossibleToSplit(int[] nums) {
+        HashMap<Integer, Integer> hash = new HashMap<>();
+        for (int num : nums) {
+            hash.put(num, hash.getOrDefault(num, 0) + 1);
+        }
+        int distinct_count = hash.size(); // Total number of distinct elements
+        int half = nums.length / 2;
+        return distinct_count >= half;
+    }
+
+    public static int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> nums = new HashMap<>();
+        for (int i = 0; i < nums2.length; i++) {
+            nums.put(nums2[i], i);
+        }
+        int[] result = new int[nums1.length];
+        int indx = 0;
+        for (int i : nums1) {
+            if (nums.containsKey(i)) {
+                int i1 = nums.get(i) + 1;
+                int temp = -1;
+                while (i1 < nums2.length) {
+                    if (nums2[i1] > i) {
+                        temp = nums2[i1];
+                        break;
+                    }
+                    i1++;
+                }
+                result[indx++] = temp;
+            }
+        }
+        return result;
+    }
+
+    public static int[] getNoZeroIntegers(int n) {
+        int left;
+        int right;
+        for (int i = 1; i < n; i++) {
+            left = i;
+            right = n - i;
+            if (isNonZero(left) && isNonZero(right)) {
+                return new int[]{left, right};
+            }
+        }
+        return new int[]{};
+    }
+
+    public static boolean isNonZero(int n) {
+        while (n > 0) {
+            if (n % 10 == 0) return false;
+            n /= 10;
+        }
+        return true;
+    }
+
+    public static int hammingWeight(int n) {
+        int ctr = 0;
+        while (n > 0) {
+            int temp = n % 10;
+            if (temp % 2 == 1) ctr++;
+            n /= 2;
+        }
+        return ctr;
+    }
+
+    public static int numberOfAlternatingGroups(int[] colors) {
+        int n = colors.length;
+        int ctr = 0;
+        for (int i = 0; i < n; i++) {
+            int prev = colors[(i - 1 + n) % n];
+            int curr = colors[i];
+            int next = colors[(i + 1) % n];
+            if (prev != curr && curr != next) {
+                ctr++;
+            }
+        }
+        return ctr;
+    }
+
+    public static int minDeletionSize(String[] strs) {
+        int ctr = 0;
+        int n = strs[0].length();
+        for (int i = 0; i < n; i++) {
+            boolean isSorted = true;
+            for (int j = 1; j < strs.length; j++) {
+                if (strs[j].charAt(i) < strs[j - 1].charAt(i)) {
+                    isSorted = false;
+                    break;
+                }
+            }
+            if (!isSorted) ctr++;
+        }
+        return ctr;
+    }
+
+    public static int thirdMax(int[] nums) {
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        for (int num : nums) {
+            hashMap.put(num, hashMap.getOrDefault(num, 0) + 1);
+        }
+        int max = Integer.MIN_VALUE;
+        int sMax = Integer.MIN_VALUE;
+        int tMax = Integer.MIN_VALUE;
+        for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
+            if (entry.getValue() == 1) {
+                Integer element = entry.getKey();
+                System.out.println("Element: " + element);
+                if (element > max) {
+                    tMax = sMax;
+                    sMax = max;
+                    max = element;
+                } else if (element > sMax && element != max) {
+                    tMax = sMax;
+                    sMax = element;
+                } else if (element > tMax && element != max && element != sMax) {
+                    tMax = element;
+                }
+            }
+        }
+        if (tMax == Integer.MIN_VALUE) {
+            if(sMax == Integer.MIN_VALUE){
+                return max;
+            }
+            return sMax;
+        }
+        return tMax;
+    }
+
+
 }
