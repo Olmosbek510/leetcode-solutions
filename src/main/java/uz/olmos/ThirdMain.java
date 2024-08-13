@@ -1,5 +1,7 @@
 package uz.olmos;
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 
 public class ThirdMain {
@@ -28,6 +30,10 @@ public class ThirdMain {
         System.out.println(numberOfAlternatingGroups(new int[]{0, 1, 0, 0, 1}));
         System.out.println("Result = " + minDeletionSize(new String[]{"zyx", "wvu", "tsr"}));
         System.out.println(thirdMax(new int[]{3, 2, 1}));
+        System.out.println(maximumProduct(new int[]{-100, -98, -1, 2, 3, 4}));
+        getEncryptedString("byd", 4);
+        arithmeticTriplets(new int[]{0, 1, 4, 6, 7, 10}, 3);
+        firstUniqChar("leetcode");
     }
 
     public static boolean checkDistances(String s, int[] distance) {
@@ -515,7 +521,7 @@ public class ThirdMain {
             }
         }
         if (tMax == Integer.MIN_VALUE) {
-            if(sMax == Integer.MIN_VALUE){
+            if (sMax == Integer.MIN_VALUE) {
                 return max;
             }
             return sMax;
@@ -523,5 +529,66 @@ public class ThirdMain {
         return tMax;
     }
 
+    public static int maximumProduct(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int m1 = nums[n - 1] * nums[n - 2] * nums[n - 3];
+        int m2 = nums[0] * nums[1] * nums[n - 1];
+        return Math.max(m1, m2);
+    }
 
+    public static String getEncryptedString(String s, int k) {
+        StringBuilder result = new StringBuilder();
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            int indx = (i + k) % n;
+            result.append(s.charAt(indx));
+        }
+        return result.toString();
+    }
+
+    public static int arithmeticTriplets(int[] nums, int diff) {
+        int ctr = 0;
+        HashSet<List<Integer>> triplets = new HashSet<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    if (i == j || j == k) continue;
+                    if (i < j && j < k && nums[j] - nums[i] == diff && nums[k] - nums[j] == diff) {
+                        List<Integer> temp = List.of(nums[i], nums[j], nums[k]);
+                        if (!triplets.contains(temp)) {
+                            triplets.add(temp);
+                            ctr++;
+                        }
+                    }
+                }
+            }
+        }
+        return ctr;
+    }
+
+    public static int numberOfSpecialChars(String word) {
+        HashMap<Character, Character> chars = new HashMap<>();
+        for (char c : word.toCharArray()) {
+            chars.put(c, (char) (c - 32));
+        }
+        int ctr = 0;
+        for (Map.Entry<Character, Character> entry : chars.entrySet()) {
+            if (word.contains(entry.getValue().toString())) ctr++;
+        }
+        return ctr;
+    }
+
+    public static int firstUniqChar(String s) {
+        LinkedHashMap<Character, Integer> map = new LinkedHashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        System.out.println(map);
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) return s.indexOf(entry.getKey());
+        }
+        return -1;
+    }
 }
