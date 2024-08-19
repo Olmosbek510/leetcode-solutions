@@ -1,8 +1,9 @@
 package uz.olmos;
 
-import java.lang.reflect.Array;
-import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FourthMain {
     public static void main(String[] args) {
@@ -15,6 +16,7 @@ public class FourthMain {
         System.out.println(reverse(1534236469));
         System.out.println(reverseStr("abcdefg", 3));
         System.out.println("Result: " + longestPalindrome("abb"));
+        System.out.println(removeStars("leet**cod*e"));
     }
 
     public static String licenseKeyFormatting(String s, int k) {
@@ -162,7 +164,6 @@ public class FourthMain {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j <= n; j++) {
                 String sub = s.substring(i, j);
-                System.out.println(sub);
                 if (isPalindrome(sub)) {
                     if (max < sub.length()) {
                         max = sub.length();
@@ -183,4 +184,51 @@ public class FourthMain {
         }
         return true;
     }
+
+    public static int lengthOfLongestSubstring(String s) {
+        int maxLen = Integer.MIN_VALUE;
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            int right = n - 1;
+            while (i < right) {
+                if (right - i + 1 <= maxLen) break;
+                String temp = s.substring(i, right + 1);
+                if (!isRepeated(temp)) {
+                    maxLen = Math.max(maxLen, temp.length());
+                    break;
+                }
+                right--;
+            }
+        }
+        return maxLen;
+    }
+
+    public static boolean isRepeated(String s) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+            if (map.get(c) == 2) return true;
+        }
+        return false;
+    }
+
+    public static String removeStars(String str) {
+        char[] chars = str.toCharArray();
+        List<Character> strs = new ArrayList<>();
+        for (char aChar : chars) {
+            strs.add(aChar);
+        }
+        int i = 0;
+        while (strs.contains('*')) {
+            if (i > 0 && strs.get(i) == '*') {
+                strs.remove(strs.get(i - 1));
+                strs.remove(strs.get('*'));
+                i+=2;
+            }
+            i++;
+        }
+        return strs.toString();
+    }
+
+
 }
