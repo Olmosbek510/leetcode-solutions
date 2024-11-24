@@ -1,4 +1,4 @@
-package uz.olmos;
+package uz.olmos.leetcode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 

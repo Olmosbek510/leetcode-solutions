@@ -1,6 +1,4 @@
-package uz.olmos;
-
-import com.sun.source.tree.Tree;
+package uz.olmos.leetcode;
 
 import java.util.*;
 

@@ -1,7 +1,6 @@
-package uz.olmos;
+package uz.olmos.leetcode;
 
 
-import javax.swing.plaf.ActionMapUIResource;
 import java.util.*;
 
 public class SecondMain {
